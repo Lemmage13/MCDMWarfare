@@ -1,18 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Space : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject Highlight;
+    public GameObject Movable;
+    public GameObject Attackable;
 
-    // Update is called once per frame
-    void Update()
+    public Unit occupiedBy;
+    private void Awake()
     {
-        
+        Highlight.SetActive(false);
+        Movable.SetActive(false);
+    }
+    private void OnMouseEnter()
+    {
+        Highlight.SetActive(true);
+    }
+    private void OnMouseExit()
+    {
+        Highlight.SetActive(false);
+    }
+    private void OnMouseDown()
+    {
+        if (Movable.activeSelf)
+        {
+            int i = 0;
+            while (!UnitManager.instance.Units[i].Active) { i++; }
+            UnitManager.instance.Units[i].Move(this);
+        }
     }
 }
