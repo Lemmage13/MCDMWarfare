@@ -25,11 +25,13 @@ public class Space : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (Movable.activeSelf)
+        if (occupiedBy != null)
         {
-            int i = 0;
-            while (!UnitManager.instance.Units[i].Active) { i++; }
-            UnitManager.instance.Units[i].Move(this);
+            UnitManager.instance.Selected = occupiedBy;
+        }
+        else if (Movable.activeSelf)
+        {
+            UnitManager.instance.Active.Move(this);
         }
     }
 }

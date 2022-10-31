@@ -8,7 +8,10 @@ public class UnitManager : MonoBehaviour
     public static UnitManager instance;
 
     public Unit unit_;
-    public List<Unit> Units;
+    public List<Unit> AllUnits;
+
+    public Unit Selected;
+    public Unit Active;
     private void Awake()
     {
         instance = this; 
@@ -26,15 +29,18 @@ public class UnitManager : MonoBehaviour
     {
         var unit = Instantiate(unit_, new Vector3(-100, -100, -100), Quaternion.identity);
         unit.player = player;
-        Units.Add(unit);
+        if (player > 0) { unit.side = true; }
+        else { unit.side = false; }
+        AllUnits.Add(unit);
+        unit.transform.parent = this.transform;
         return unit;
     }
     public List<Unit> GetPlayerUnits(int player)
     {
         List<Unit> pUnits = new List<Unit>();
-        for (int i = 0; i < Units.Count; i++)
+        for (int i = 0; i < AllUnits.Count; i++)
         {
-            var unit = Units[i];
+            var unit = AllUnits[i];
             if (unit.player == player)
             {
                 pUnits.Add(unit);

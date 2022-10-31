@@ -111,13 +111,13 @@ public class BattlefieldManager : MonoBehaviour
             { Spaces[dI].Movable.SetActive(true); }
         }
     }
-    public void SpawnPlate(bool onoff, int player)
+    public void SpawnPlate(bool onoff, bool side)
     {
         int start = 0;
-        if (player < 0) { start = Spaces.Count / 2; }
+        if (!side) { start = Spaces.Count / 2; }
         for (int i = start; i < Spaces.Count/2 + start; i++)
         {
-            Spaces[i].Movable.SetActive(onoff);
+            if (Spaces[i].occupiedBy == null) { Spaces[i].Movable.SetActive(onoff); }
         }
     }
     public void clearMovable()

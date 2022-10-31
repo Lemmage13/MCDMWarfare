@@ -11,8 +11,13 @@ public class GameManager : MonoBehaviour
 
     public GameState State;
     public int PCnum = 1;
-    public int NPCnum = -1;
+    public int DMCnum = 1;
+    public int unitnum = 2;
+
+    public int[] turnorder = { 1, -1 }; //temporary for testing - will eventually be changeable
+    public int activePlayer;
     public int turn;
+    public bool winner;
 
     public static event Action<GameState> GameStateChanged;
     private void Awake()
@@ -21,70 +26,76 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        UpdateGameState(GameState.SpawnPlayers);
+        UpdateGameState(GameState.SpawnTurn);
     }
     public void UpdateGameState(GameState newState)
     {
         State = newState;
         switch (newState)
         {
-            case GameState.SpawnPlayers:
-                StartCoroutine(PlayerTurnSpawn(1));
+            case GameState.SpawnTurn:
+                StartCoroutine(HandleSpawn());
                 break;
-            case GameState.SpawnDM:
-                StartCoroutine(DMTurnSpawn(-1));
-                break;
-            case GameState.PlayerTurn:
-                StartCoroutine(PlayerTurn());
-                break;
-            case GameState.DMTurn:
-                UpdateGameState(GameState.PlayerTurn);
+            case GameState.GameTurns:
+                StartCoroutine(HandleTurns());
                 break;
             default:
                 break;
         }
         GameStateChanged(newState);
     }
-    public IEnumerator PlayerTurnSpawn(int player)
+    public IEnumerator HandleSpawn()
     {
-        Unit unit = UnitManager.instance.GenerateUnit(player);
-        BattlefieldManager.instance.SpawnPlate(true, player);
-        unit.Active = true;
-        while (unit.Active) { yield return null; }
-        BattlefieldManager.instance.clearMovable();
-        UpdateGameState(GameState.SpawnDM);
-    }
-    public IEnumerator DMTurnSpawn(int player)
-    {
-        Unit unit = UnitManager.instance.GenerateUnit(-1);
-        BattlefieldManager.instance.SpawnPlate(true, player);
-        unit.Active = true;
-        unit.Move(BattlefieldManager.instance.Spaces[27]);
-        BattlefieldManager.instance.clearMovable();
-        UpdateGameState(GameState.PlayerTurn);
-        yield return null;
-    }
-    public IEnumerator PlayerTurn()
-    {
-        for (int i = 0; i < PCnum + 1; ++i)
+        foreach (int player in turnorder)
         {
-            List<Unit>PlayerUnits = UnitManager.instance.GetPlayerUnits(i);
-            foreach (Unit unit in PlayerUnits)
+            turn = player;
+            for (int i = 0; i < unitnum; i++)
             {
-                unit.Active = true;
-                BattlefieldManager.instance.MovePlate(unit.occupying);
-                while (unit.Active) { yield return null; }
-                BattlefieldManager.instance.clearMovable();
+                Unit unit = UnitManager.instance.GenerateUnit(player);
+                unit.name = "player " + player.ToString() + " unit " + i.ToString();
+                StartCoroutine(unit.Spawn());
+                UnitManager.instance.Active = unit;
+                while (unit.occupying == null) { yield return null; }
+                UnitManager.instance.Active = null;
             }
         }
-        UpdateGameState(GameState.DMTurn);
+        UpdateGameState(GameState.GameTurns);
     }
-    
+    public IEnumerator HandleTurns()
+    {
+        winner = false;
+        activePlayer = 0;
+        StartCoroutine(PlayerTurn(turnorder[activePlayer]));
+        while (!winner)
+        {
+            yield return null;
+        }
+    }
+    public IEnumerator PlayerTurn(int player)
+    {
+        Debug.Log($"player turn " + player.ToString());
+        List<Unit> playerUnits = UnitManager.instance.GetPlayerUnits(player);
+        foreach (Unit unit in playerUnits) { unit.Ready = true; }
+        while (turnorder[activePlayer] == player)
+        {
+            yield return null;
+        }
+    }
+    public void EndTurn(int player)
+    {
+        UnitManager.instance.Active = null;
+        List<Unit> playerUnits = UnitManager.instance.GetPlayerUnits(player);
+        for (int i= 0; i < playerUnits.Count; i++)
+        {
+            playerUnits[i].Ready = false;
+        }
+        BattlefieldManager.instance.clearMovable();
+        activePlayer = (activePlayer + 1) % (PCnum + DMCnum);
+        StartCoroutine(PlayerTurn(turnorder[activePlayer]));
+    }
 }
 public enum GameState
 {
-    SpawnPlayers,
-    SpawnDM,
-    PlayerTurn,
-    DMTurn
+    SpawnTurn,
+    GameTurns
 }
