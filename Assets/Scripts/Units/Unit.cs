@@ -12,23 +12,35 @@ public class Unit : MonoBehaviour
     public int player;
     public bool side; //1 is player, 0 is DM
     
-    public bool AP;      // ACTION POINTS MAY BE BOOLEAN OR INT - WILL NEED TO CHECK LATER
-    public bool bAP;
-    public bool MP;
+    public int AP;
+    public int bAP;
+    public int MP;
 
-    //Stats (to be added)
+    //Stats
+    int ATK;    //Attack
+    int DEF;    //Defence
+    int POW;    //Power
+    int TOU;    //Toughness
+    int MOR;    //Morale
+    int COM;    //Command
+    int NoA;    //number of attacks
+    int DMG;    //Damage
+
+    int size;   //Size
+    int MVMT;   //number of spaces of movement per action
 
     private void Awake()
     {
         
     }
-    //Activating unit using turn button will start unit turn - atk/mv plates generated automatically
+    //Activating unit using turn button will start unit turn - atk/mv plates generated w/ Actions()
+    //unit will wait for instruction
     public IEnumerator ActivateUnit()
     {
         UnitManager.instance.Active = this;
-        AP = true;
-        MP = true;
-        bAP = true;
+        AP = 1;
+        MP = 1;
+        bAP = 1;
         while (UnitManager.instance.Active == this)
         {
             Actions();
@@ -42,35 +54,40 @@ public class Unit : MonoBehaviour
         }
         Ready = false;
     }
+    //spawn will move a unit that does not occupy a space onto the battlefield
     public IEnumerator Spawn()
     {
-        MP = true;
+        MP = 1;
         BattlefieldManager.instance.SpawnPlate(true, side);
-        while (MP) { yield return null; }
+        while (MP > 0) { yield return null; }
         BattlefieldManager.instance.clearMovable();
     }
+    //Actions() checks which action points the unit has and generates a movement/attack/action plate for each
     private void Actions()
     {
-        if (AP)
+        if (AP > 0)
+        { 
+            BattlefieldManager.instance.MovePlate(occupying);
+        }
+        else if (MP > 0)
         {
             BattlefieldManager.instance.MovePlate(occupying);
         }
-        else if (MP)
-        {
-            BattlefieldManager.instance.MovePlate(occupying);
-        }
-        if (bAP)
+        if (bAP > 0)
         {
             //do stuff for bonus action (if available)
         }
     }
     private bool CheckSpentPoints()
     {
-        if (!AP) { return true; }
-        else if (!MP) { return true; }
-        else if (!bAP) { return true; }
+        if (AP == 0) { return true; }
+        else if (MP == 0) { return true; }
+        else if (bAP == 0) { return true; }
         else { return false; }
     }
+    //move action moves unit into unoccupied space and decrements movement points or action points
+    //possible improvement would convert action point to movement points for robustness
+    //when dealing with units with multiple moves
     public void Move(Space space)
     {
         if (space.Movable.activeSelf){
@@ -79,8 +96,8 @@ public class Unit : MonoBehaviour
             space.occupiedBy = this;
             occupying = space;
             BattlefieldManager.instance.clearMovable();
-            if (MP) { MP = false; }
-            else if (AP) { AP = false; }
+            if (MP > 0) { MP--; }
+            else if (AP > 0) { AP--; }
         }
     }
 }

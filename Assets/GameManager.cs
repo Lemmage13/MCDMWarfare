@@ -8,6 +8,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    System.Random dice = new System.Random();
 
     public GameState State;
     public int PCnum = 1;
@@ -93,6 +94,27 @@ public class GameManager : MonoBehaviour
         activePlayer = (activePlayer + 1) % (PCnum + DMCnum);
         StartCoroutine(PlayerTurn(turnorder[activePlayer]));
     }
+    public int dieRoll(int dx, Advantage adv)
+    {
+        switch (adv)
+        {
+            case Advantage.Standard:
+                return dice.Next(1, dx + 1);
+            case Advantage.Advantage:
+                return Math.Max(dice.Next(1, dx + 1), dice.Next(1, dx + 1));
+            case Advantage.Disadvantage:
+                return Math.Min(dice.Next(1, dx + 1), dice.Next(1, dx + 1));
+            default:
+                Debug.Log("dice error - null advantage");
+                return dice.Next(1, dx + 1);
+        }
+    }
+}
+public enum Advantage
+{
+    Standard,
+    Advantage,
+    Disadvantage
 }
 public enum GameState
 {
