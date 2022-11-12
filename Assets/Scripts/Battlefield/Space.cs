@@ -14,6 +14,7 @@ public class Space : MonoBehaviour
     {
         Highlight.SetActive(false);
         Movable.SetActive(false);
+        Attackable.SetActive(false);
     }
     private void OnMouseEnter()
     {
@@ -27,7 +28,7 @@ public class Space : MonoBehaviour
     {
         if (occupiedBy != null)
         {
-            UnitManager.instance.Selected = occupiedBy;
+            UnitManager.instance.unitSelect(occupiedBy);
         }
         else if (Movable.activeSelf)
         {

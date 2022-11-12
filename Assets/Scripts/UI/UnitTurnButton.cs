@@ -4,21 +4,73 @@ using UnityEngine;
 
 public class UnitTurnButton : MonoBehaviour
 {
+    public GameObject StartTurn;
+    public GameObject EndTurn;
+    public GameObject greyout;
+
+    private void Awake()
+    {
+        StartTurn.SetActive(false);
+        EndTurn.SetActive(false);
+        greyout.SetActive(true);
+    }
+    private void Start()
+    {
+        UnitManager.instance.UnitSelected += unitSelUpdate;
+    }
     private void OnMouseDown()
     {
         Unit unit = UnitManager.instance.Selected;
         if (unit != null)
         {
-            if (unit.Ready && unit != UnitManager.instance.Active)
+            if (unit.Ready && unit != UnitManager.instance.Active) //activate newly selected unit
             {
+                StartTurn.SetActive(false);
+                EndTurn.SetActive(true);
+                BattlefieldManager.instance.clearPlates();
                 StartCoroutine(unit.ActivateUnit());
             }
-            else if (unit == UnitManager.instance.Active)
+            else if (unit == UnitManager.instance.Active) //deactivate already active unit
             {
-                BattlefieldManager.instance.clearMovable();
+                StartTurn.SetActive(false);
+                EndTurn.SetActive(false);
+                greyout.SetActive(true);
                 unit.Ready = false;
                 UnitManager.instance.Active = null;
+                BattlefieldManager.instance.clearPlates();
             }
         }
     }
+#nullable enable
+    void unitSelUpdate(Unit? unit)
+    {
+        if (unit != null)
+        {
+            if (UnitManager.instance.Active == unit)
+            {
+                greyout.SetActive(false);
+                StartTurn.SetActive(false);
+                EndTurn.SetActive(true);
+            }
+            else if (unit.Ready)
+            {
+                greyout.SetActive(false);
+                EndTurn.SetActive(false);
+                StartTurn.SetActive(true);
+            }
+            else
+            {
+                StartTurn.SetActive(false);
+                EndTurn.SetActive(false);
+                greyout.SetActive(true);
+            }
+        }
+        else
+        {
+            StartTurn.SetActive(false);
+            EndTurn.SetActive(false);
+            greyout.SetActive(true);
+        }
+    }
+#nullable disable
 }

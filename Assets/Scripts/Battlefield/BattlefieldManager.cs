@@ -57,6 +57,8 @@ public class BattlefieldManager : MonoBehaviour
         }
         cam.transform.position = new Vector3((float)files / 2, (float)ranks + 0.15F, -10);
     }
+    //NOTE ---- SERIOUS IMPROVEMENTS REQUIRED FOR THE MOVE/ATTACK PLATE SYSTEM 
+    //--------- COORDINATE SYSTEM LIKELY REQUIRED
     public void MovePlate(Space unitSpace)
     {
         int index = Spaces.IndexOf(unitSpace);
@@ -93,22 +95,22 @@ public class BattlefieldManager : MonoBehaviour
         if ((index + 1) % files != 0)
         {
             if (Spaces[rI].occupiedBy != null && !UnitManager.instance.CompareTeam(unit, Spaces[rI].occupiedBy)) 
-                { Spaces[rI].Movable.SetActive(true); }
+                { Spaces[rI].Attackable.SetActive(true); }
         }
         if (index % files != 0)
         {
             if (Spaces[lI].occupiedBy != null && !UnitManager.instance.CompareTeam(unit, Spaces[lI].occupiedBy))
-            { Spaces[lI].Movable.SetActive(true); }
+            { Spaces[lI].Attackable.SetActive(true); }
         }
         if (index + files <= Spaces.Count)
         {
             if (Spaces[uI].occupiedBy != null && !UnitManager.instance.CompareTeam(unit, Spaces[uI].occupiedBy)) 
-            { Spaces[uI].Movable.SetActive(true); }
+            { Spaces[uI].Attackable.SetActive(true); }
         }
         if (index >= files)
         {
             if (Spaces[dI].occupiedBy != null && !UnitManager.instance.CompareTeam(unit, Spaces[dI].occupiedBy)) 
-            { Spaces[dI].Movable.SetActive(true); }
+            { Spaces[dI].Attackable.SetActive(true); }
         }
     }
     public void SpawnPlate(bool onoff, bool side)
@@ -120,11 +122,12 @@ public class BattlefieldManager : MonoBehaviour
             if (Spaces[i].occupiedBy == null) { Spaces[i].Movable.SetActive(onoff); }
         }
     }
-    public void clearMovable()
+    public void clearPlates()
     {
         for (int i = 0; i < Spaces.Count; i++)
         {
             Spaces[i].Movable.SetActive(false);
+            Spaces[i].Attackable.SetActive(false);
         }
     }
 }

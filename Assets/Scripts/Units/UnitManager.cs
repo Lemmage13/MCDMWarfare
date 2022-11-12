@@ -11,19 +11,17 @@ public class UnitManager : MonoBehaviour
     public List<Unit> AllUnits;
 
     public Unit Selected;
+    public event Action<Unit> UnitSelected;
+
     public Unit Active;
     private void Awake()
     {
-        instance = this; 
-        GameManager.GameStateChanged += GameManager_GameStateChanged;
+        instance = this;
     }
-    private void OnDestroy()
+    public void unitSelect(Unit unit)
     {
-        GameManager.GameStateChanged -= GameManager_GameStateChanged;
-    }
-    private void GameManager_GameStateChanged(GameState state)
-    {
-        
+        Selected = unit;
+        UnitSelected(unit);
     }
     public Unit GenerateUnit(int player)
     {
