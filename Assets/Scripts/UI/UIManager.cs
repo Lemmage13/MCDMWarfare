@@ -21,14 +21,14 @@ public class UIManager : MonoBehaviour
         UnitManager.instance.UnitSelected += SelectUpdate;
         GameManager.GameStateChanged += GameStateUpdated;
     }
-    public void SelectUpdate(Unit selected)
+    public void SelectUpdate(BaseUnit selected)
     {
         if (UnitManager.instance.Active != null)
         {
-            Unit Active = UnitManager.instance.Active;
-            if (selected.occupying.Attackable.activeSelf) 
+            BaseUnit Active = UnitManager.instance.Active;
+            if (selected.Occupying.Attackable.activeSelf)
             { AttackButton.SetActive(true); AttackText.SetActive(true); }
-            else 
+            else
             { AttackButton.SetActive(false); AttackText.SetActive(false); }
         }
     }

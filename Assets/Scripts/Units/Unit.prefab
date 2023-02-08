@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7659938817035985045}
   - component: {fileID: 9221697731772017888}
-  - component: {fileID: 3350982965894154254}
+  - component: {fileID: -3642952815028064032}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3350982965894154254
+--- !u!114 &-3642952815028064032
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,9 +94,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 3308345454776135805}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b57f2eeab2692d8448e5263a63ef30b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 8664c23cbf9df1d4084fde04fd3417a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Active: 0
-  stood: {fileID: 0}
+  Ready: 0
+  Alive: 0
+  Diminished: 0
+  Ancestry: 0
+  Type: 0
+  occupying: {fileID: 0}
   player: 0
+  side: 0
+  AP: 0
+  bAP: 0
+  HP: 0
+  ATK: 3
+  DEF: 12
+  POW: 2
+  TOU: 12
+  MOR: 0
+  COM: 0
+  NoA: 1
+  DMG: 1
+  MVMT: 1
+  size: 6
+  tier: 1

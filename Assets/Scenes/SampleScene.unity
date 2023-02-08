@@ -1137,8 +1137,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1258d8e540ed6a34ebb24114bbd959f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unit_: {fileID: 3350982965894154254, guid: 67814721e84095f4180840f3a3405cf0, type: 3}
+  unitPrefab: {fileID: -3642952815028064032, guid: 67814721e84095f4180840f3a3405cf0, type: 3}
   AllUnits: []
+  PlayerUnits: []
+  DMUnits: []
   Selected: {fileID: 0}
   Active: {fileID: 0}
 --- !u!1 &882085727

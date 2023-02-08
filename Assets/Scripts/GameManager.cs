@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -57,13 +55,11 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 0; i < unitnum; i++)
             {
-                Unit unit = UnitManager.instance.GenerateUnit(player);
+                BaseUnit unit = UnitManager.instance.GenerateUnit(player, UnitType.Infantry, Ancestry.Human);
                 unit.name = "player " + player.ToString() + " unit " + i.ToString();
-                StartCoroutine(unit.Spawn());
-                UnitManager.instance.Active = unit;
-                while (unit.occupying == null) { yield return null; }
-                UnitManager.instance.Active = null;
-                Debug.Log("unit " + (i+1).ToString() + " of " + unitnum.ToString() + " spawned");
+                unit.ActivateSpawning();
+                while (unit.Occupying == null) { yield return null; }
+                Debug.Log("unit " + (i + 1).ToString() + " of " + unitnum.ToString() + " spawned");
             }
         }
         Round = 0;
@@ -82,8 +78,8 @@ public class GameManager : MonoBehaviour
     public IEnumerator PlayerRound(int player)
     {
         Debug.Log($"player turn " + player.ToString());
-        List<Unit> playerUnits = UnitManager.instance.GetPlayerUnits(player);
-        foreach (Unit unit in playerUnits) { unit.Ready = true; }
+        List<BaseUnit> playerUnits = UnitManager.instance.GetPlayerUnits(player);
+        foreach (BaseUnit unit in playerUnits) { unit.Ready = true; }
         if (Victor == Team.none)
         {
             while (turnorder[activePlayer] == player)
@@ -91,13 +87,13 @@ public class GameManager : MonoBehaviour
                 yield return null;
             }
         }
-    } 
+    }
     public void EndTurn(int player)
     {
         UnitManager.instance.Active = null;
-        UnitManager.instance.unitSelect(null);
-        List<Unit> playerUnits = UnitManager.instance.GetPlayerUnits(player);
-        for (int i= 0; i < playerUnits.Count; i++) 
+        UnitManager.instance.UnitSelect(null);
+        List<BaseUnit> playerUnits = UnitManager.instance.GetPlayerUnits(player);
+        for (int i = 0; i < playerUnits.Count; i++)
         {
             playerUnits[i].Ready = false;
         }
@@ -115,11 +111,11 @@ public class GameManager : MonoBehaviour
         int DMUTier = 0;
         for (int i = 0; i < UnitManager.instance.AllUnits.Count; i++)
         {
-            Unit unit = UnitManager.instance.AllUnits[i];
+            BaseUnit unit = UnitManager.instance.AllUnits[i];
             if (unit.Alive)
             {
-                if (unit.player > 0) { PCUTier += unit.tier; }
-                else if (UnitManager.instance.AllUnits[i].player < 0) { DMUTier += unit.tier; }
+                if (unit.Player > 0) { PCUTier += unit.GetTier(); }
+                else if (UnitManager.instance.AllUnits[i].Player < 0) { DMUTier += unit.GetTier(); }
             }
         }
         Debug.Log("compare: " + PCUTier.ToString() + " " + DMUTier.ToString());
@@ -150,10 +146,12 @@ public class GameManager : MonoBehaviour
         switch (adv)
         {
             case true:
+                Debug.Log("Advantage!");
                 roll = Math.Max(dice.Next(1, dx + 1), dice.Next(1, dx + 1));
                 Debug.Log("Rolled: " + roll.ToString());
                 return roll;
             case false:
+                Debug.Log("Disadvantage!");
                 roll = Math.Min(dice.Next(1, dx + 1), dice.Next(1, dx + 1));
                 Debug.Log("Rolled: " + roll.ToString());
                 return roll;
@@ -177,4 +175,17 @@ public enum GameState
     RoundTurns,
     RoundEnd,
     GameEnd
+}
+public enum UnitType
+{
+    Aerial,
+    Artillery,
+    Cavalry,
+    Infantry
+}
+public enum Ancestry
+{
+    Dwarf,
+    Elf,
+    Human
 }

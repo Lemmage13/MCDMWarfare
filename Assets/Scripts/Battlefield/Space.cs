@@ -1,6 +1,5 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class Space : MonoBehaviour
@@ -8,13 +7,21 @@ public class Space : MonoBehaviour
     public GameObject Highlight;
     public GameObject Movable;
     public GameObject Attackable;
+    public GameObject Spawnable;
+    public bool Front;
 
-    public Unit occupiedBy;
+    public int x;
+    public int y;
+
+    public List<Space> Adjacent;
+
+    public BaseUnit occupiedBy;
     private void Awake()
     {
         Highlight.SetActive(false);
         Movable.SetActive(false);
         Attackable.SetActive(false);
+        Spawnable.SetActive(false);
     }
     private void OnMouseEnter()
     {
@@ -28,11 +35,36 @@ public class Space : MonoBehaviour
     {
         if (occupiedBy != null)
         {
-            UnitManager.instance.unitSelect(occupiedBy);
+            UnitManager.instance.UnitSelect(occupiedBy);
         }
         else if (Movable.activeSelf)
         {
-            UnitManager.instance.Active.Move(this);
+            UnitManager.instance.Active.MakeMove(this);
         }
+        else if (Spawnable.activeSelf)
+        {
+            UnitManager.instance.Active.Spawn(this);
+        }
+    }
+    public void ListAdjacent()
+    {
+        Adjacent = new List<Space>();
+        foreach (Space space in BattlefieldManager.instance.Spaces)
+        {
+            if (Distance(this, space) == 1) { Adjacent.Add(space); }
+        }
+    }
+    bool IsAdjacent(Space space)
+    {
+        foreach (Space i in Adjacent)
+        {
+            if (i == space) { return true; }
+        }
+        return false;
+    }
+    public int Distance(Space A, Space B)
+    {
+        int dist = Math.Abs(A.x - B.x) + Math.Abs(A.y - B.y);
+        return dist;
     }
 }

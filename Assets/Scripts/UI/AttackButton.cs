@@ -6,6 +6,6 @@ public class AttackButton : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        UnitManager.instance.Active.Attack(UnitManager.instance.Selected);
+        UnitManager.instance.Active.MakeAttack(UnitManager.instance.Selected);
     }
 }

@@ -20,7 +20,7 @@ public class UnitTurnButton : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        Unit unit = UnitManager.instance.Selected;
+        BaseUnit unit = UnitManager.instance.Selected;
         if (unit != null)
         {
             if (unit.Ready && unit != UnitManager.instance.Active) //activate newly selected unit
@@ -28,7 +28,7 @@ public class UnitTurnButton : MonoBehaviour
                 StartTurn.SetActive(false);
                 EndTurn.SetActive(true);
                 BattlefieldManager.instance.clearPlates();
-                StartCoroutine(unit.ActivateUnit());
+                unit.ActivateUnit();
             }
             else if (unit == UnitManager.instance.Active) //deactivate already active unit
             {
@@ -42,7 +42,7 @@ public class UnitTurnButton : MonoBehaviour
         }
     }
 #nullable enable
-    void unitSelUpdate(Unit? unit)
+    void unitSelUpdate(BaseUnit? unit)
     {
         if (unit != null)
         {
