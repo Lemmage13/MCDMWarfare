@@ -36,7 +36,7 @@ public class BaseUnit : MonoBehaviour
     [SerializeField] int TOU = 12;    //Toughness
     [SerializeField] int MOR = 0;    //Morale
     [SerializeField] int COM = 0;    //Command
-    [SerializeField] int NoA = 2;    //number of attacks
+    [SerializeField] int NoA = 1;    //number of attacks
     [SerializeField] int DMG = 1;    //Damage
 
     [SerializeField] int MVMT = 1;   //number of spaces of movement per action
