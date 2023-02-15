@@ -65,7 +65,7 @@ public class BattlefieldManager : MonoBehaviour
         {
             space.ListAdjacent();
         }
-        cam.transform.position = new Vector3((float)files / 2, (float)ranks + 0.15F, -10);
+        cam.transform.position = new Vector3((float)files / 2, (float)ranks + 0.3F, -100);
     }
     public void clearPlates()
     {

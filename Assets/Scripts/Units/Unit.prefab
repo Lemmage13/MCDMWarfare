@@ -3180,8 +3180,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4093629801742742975}
+  - component: {fileID: 2582772465763214292}
   m_Layer: 0
-  m_Name: InfoManager
+  m_Name: StatsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3205,6 +3206,29 @@ Transform:
   m_Father: {fileID: 7659938817035985045}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2582772465763214292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5762259265186622310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 519ebb827ce838440bc5dcfac2341745, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: {fileID: 4079048452068144789}
+  Tier: {fileID: 1406885956672317032}
+  HP: {fileID: 6934285451013848543}
+  NoA: {fileID: 5001013935485028991}
+  DMG: {fileID: 2335177900562356874}
+  ATK: {fileID: 1283057609816803844}
+  DEF: {fileID: 7566379328791871929}
+  POW: {fileID: 8074652714100315845}
+  TOU: {fileID: 2034875100123345640}
+  MOR: {fileID: 8174680332488163995}
+  COM: {fileID: 6308486925196043813}
 --- !u!1 &6279752400466973105
 GameObject:
   m_ObjectHideFlags: 0
@@ -3216,7 +3240,7 @@ GameObject:
   - component: {fileID: 9146467472531166102}
   - component: {fileID: 3417811290378284295}
   m_Layer: 0
-  m_Name: Isometric Diamond
+  m_Name: DMGSpace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3472,7 +3496,7 @@ GameObject:
   - component: {fileID: 3721480346416301226}
   - component: {fileID: 1406885956672317032}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Tier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
