@@ -4,8 +4,8 @@ using UnityEngine;
 
 public static class UnitList
 {
-    [SerializeField] static List<int[]> playerUnits;
-    [SerializeField] static List<int[]> DMUnits;
+    static List<int[]> playerUnits;
+    static List<int[]> DMUnits;
 
     static public void SetPlayerUnits(List<int[]> unitList)
     {
@@ -14,5 +14,13 @@ public static class UnitList
     static public void SetDMUnits(List<int[]> unitList)
     {
         DMUnits = new List<int[]>(unitList);
+    }
+    static public List<int[]> GetPlayerUnits()
+    {
+        return playerUnits;
+    }
+    static public List<int[]> GetDMUnits()
+    {
+        return DMUnits;
     }
 }

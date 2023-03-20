@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class UnitManager : MonoBehaviour
@@ -37,6 +38,38 @@ public class UnitManager : MonoBehaviour
         unit.Initialise(type, ancestry, player);
         AllUnits.Add(unit);
         return unit;
+    }
+    public void debuggy()
+    {
+        Debug.Log("method reached");
+    }
+    public async void Spawning()
+    {
+        Debug.Log("Spawning started");
+        List<int[]> playerUnits = UnitList.GetPlayerUnits();
+        List<int[]> DMUnits = UnitList.GetDMUnits();
+        int i = 0;
+        foreach (int[] pUnit in playerUnits)
+        {
+            i++;
+            BaseUnit unit = UnitManager.instance.GenerateUnit(1, (UnitType)pUnit[0], (Ancestry)pUnit[1]);
+            unit.name = "player " + 1.ToString() + " unit " + i.ToString();
+            unit.ActivateSpawning();
+            while (unit.Occupying == null) { await Task.Yield(); } //neater way to use aync here
+            Debug.Log("unit " + (i).ToString() + " of " + pUnit.Length.ToString() + " spawned");
+        }
+        i = 0;
+        foreach (int[] dUnit in DMUnits)
+        {
+            i++;
+            BaseUnit unit = UnitManager.instance.GenerateUnit(-1, (UnitType)dUnit[0], (Ancestry)dUnit[1]);
+            unit.name = "player " + (-1).ToString() + " unit " + i.ToString();
+            unit.ActivateSpawning();
+            while (unit.Occupying == null) { await Task.Yield(); } //neater way to use aync here
+            Debug.Log("unit " + (i).ToString() + " of " + dUnit.Length.ToString() + " spawned");
+        }
+        Debug.Log("Spawning finished");
+        GameManager.Instance.UpdateBattleState(BattleState.RoundTurns);
     }
     public List<BaseUnit> GetPlayerUnits(int player)
     {

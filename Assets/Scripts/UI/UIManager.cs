@@ -19,7 +19,6 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         UnitManager.instance.UnitSelected += SelectUpdate;
-        GameManager.GameStateChanged += GameStateUpdated;
     }
     public void SelectUpdate(BaseUnit selected)
     {
@@ -30,17 +29,6 @@ public class UIManager : MonoBehaviour
             { AttackButton.SetActive(true); AttackText.SetActive(true); }
             else
             { AttackButton.SetActive(false); AttackText.SetActive(false); }
-        }
-    }
-    public void GameStateUpdated(GameState state)
-    {
-        switch (state)
-        {
-            case GameState.GameEnd:
-                gameEnd();
-                break;
-            default:
-                break;
         }
     }
     public void gameEnd()

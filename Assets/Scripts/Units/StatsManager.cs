@@ -24,6 +24,7 @@ public class StatsManager : MonoBehaviour
         UpdateTier();
         UpdateHP();
         UpdateAllStats();
+        ChangeColour();
     }
     public void UpdateName()
     {
@@ -71,6 +72,18 @@ public class StatsManager : MonoBehaviour
             case Stats.NoA: NoA.text = statnum.ToString(); break;
             case Stats.DMG: DMG.text = statnum.ToString(); break;
             default: break;
+        }
+    }
+    void ChangeColour()
+    {
+        SpriteRenderer spriteRenderer = GetComponentInParent<SpriteRenderer>();
+        if (GetComponentInParent<BaseUnit>().Side)
+        {
+            spriteRenderer.color = new Color(0.7F, 0.85F, 0.7F, 1F);
+        }
+        else if (!GetComponentInParent<BaseUnit>().Side)
+        {
+            spriteRenderer.color = new Color(0.85F, 0.7F, 0.7F, 1F);
         }
     }
     public void UpdateAllStats()

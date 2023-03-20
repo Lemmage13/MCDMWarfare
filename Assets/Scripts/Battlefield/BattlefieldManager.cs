@@ -15,19 +15,15 @@ public class BattlefieldManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        GameManager.GameStateChanged += GameManager_GameStateChanged;
     }
-    private void OnDestroy()
-    {
-        GameManager.GameStateChanged -= GameManager_GameStateChanged;
-    }
-    private void GameManager_GameStateChanged(GameState state)
+    private void BattleStateUpdated(BattleState state)
     {
         
     }
     void Start()
     {
         BuildBattlefield();
+        UnitManager.instance.Spawning();
     }
     void BuildBattlefield()
     {

@@ -1,7 +1,10 @@
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,61 +12,74 @@ public class GameManager : MonoBehaviour
     System.Random dice = new System.Random();
 
     public GameState State;
+    public BattleState BattleState;
     public int PCnum = 1;
     public int DMCnum = 1;
-    public int unitnum = 3; //temporary for spawning set units for testing
 
     public int[] turnorder = { 1, -1 }; //temporary for testing - will eventually be changeable
     public int activePlayer;
     public int Round;
     public bool roundEnd;
     public Team Victor = Team.none;
-
-    public static event Action<GameState> GameStateChanged;
-    private void Awake()
-    {
-        Instance = this;
-    }
     private void Start()
     {
-        UpdateGameState(GameState.SpawnTurn);
+        if (Instance == null)
+        {
+            DontDestroyOnLoad(this);
+            Instance = this;
+        }
+    }
+    public void StartBattle()
+    {
+        UpdateGameState(GameState.Battlefield);
     }
     public void UpdateGameState(GameState newState)
     {
         State = newState;
         switch (newState)
         {
-            case GameState.SpawnTurn:
-                StartCoroutine(HandleSpawn());
+            case GameState.ArmyBuilder:
+                HandleArmyBuilder();
                 break;
-            case GameState.RoundTurns:
-                StartCoroutine(HandleTurns());
-                break;
-            case GameState.RoundEnd:
-                RoundEnd();
-                break;
-            case GameState.GameEnd:
+            case GameState.Battlefield:
+                HandleBattlefield();
                 break;
             default:
                 break;
         }
-        GameStateChanged(newState);
     }
-    public IEnumerator HandleSpawn()
+    void HandleArmyBuilder()
     {
-        foreach (int player in turnorder)
+        SceneManager.LoadScene("ArmyBuilder");
+    }
+    void HandleBattlefield()
+    {
+        SceneManager.LoadScene("Battlefield");
+        UpdateBattleState(BattleState.SpawnTurn);
+    }
+    public void UpdateBattleState(BattleState newState)
+    {
+        BattleState = newState;
+        switch (newState)
         {
-            for (int i = 0; i < unitnum; i++)
-            {
-                BaseUnit unit = UnitManager.instance.GenerateUnit(player, UnitType.Infantry, Ancestry.Human);
-                unit.name = "player " + player.ToString() + " unit " + i.ToString();
-                unit.ActivateSpawning();
-                while (unit.Occupying == null) { yield return null; }
-                Debug.Log("unit " + (i + 1).ToString() + " of " + unitnum.ToString() + " spawned");
-            }
+            case BattleState.SpawnTurn:
+                HandleSpawn();
+                break;
+            case BattleState.RoundTurns:
+                StartCoroutine(HandleTurns());
+                break;
+            case BattleState.RoundEnd:
+                RoundEnd();
+                break;
+            case BattleState.GameEnd:
+                break;
+            default:
+                break;
         }
+    }
+    public void HandleSpawn()
+    {
         Round = 0;
-        UpdateGameState(GameState.RoundTurns);
     }
     public IEnumerator HandleTurns()
     {
@@ -101,7 +117,7 @@ public class GameManager : MonoBehaviour
         activePlayer += 1;
         if (activePlayer == turnorder.Length)
         {
-            UpdateGameState(GameState.RoundEnd);
+            UpdateBattleState(BattleState.RoundEnd);
         }
         else { StartCoroutine(PlayerRound(turnorder[activePlayer])); }
     }
@@ -132,13 +148,13 @@ public class GameManager : MonoBehaviour
             Debug.Log("prepare to start next round");
             activePlayer = 0;
             Round++;
-            UpdateGameState(GameState.RoundTurns);
+            UpdateBattleState(BattleState.RoundTurns);
         }
     }
     public void BattleEnd(Team victor)
     {
         Victor = victor;
-        UpdateGameState(GameState.GameEnd);
+        UpdateBattleState(BattleState.GameEnd);
     }
     public int dieRoll(int dx, bool? adv)
     {
@@ -170,6 +186,11 @@ public enum Team
 }
 public enum GameState
 {
+    ArmyBuilder,
+    Battlefield
+}
+public enum BattleState
+{
     SpawnTurn,
     TurnStart,
     RoundTurns,
@@ -178,14 +199,15 @@ public enum GameState
 }
 public enum UnitType
 {
+
+    Infantry,
     Aerial,
     Artillery,
-    Cavalry,
-    Infantry
+    Cavalry
 }
 public enum Ancestry
 {
+    Human,
     Dwarf,
-    Elf,
-    Human
+    Elf
 }
