@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
     }
     public void SelectUpdate(BaseUnit selected)
     {
-        if (UnitManager.instance.Active != null)
+        if (UnitManager.instance.Selected != null && UnitManager.instance.Active != null)
         {
             BaseUnit Active = UnitManager.instance.Active;
             if (selected.Occupying.Attackable.activeSelf)
@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour
             else
             { AttackButton.SetActive(false); AttackText.SetActive(false); }
         }
+        else { AttackButton.SetActive(false); AttackText.SetActive(false); }
     }
     public void gameEnd()
     {

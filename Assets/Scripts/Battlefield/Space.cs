@@ -8,6 +8,7 @@ public class Space : MonoBehaviour
     public GameObject Movable;
     public GameObject Attackable;
     public GameObject Spawnable;
+    public Rank Rank;
     public bool Front;
 
     public int x;
@@ -67,4 +68,11 @@ public class Space : MonoBehaviour
         int dist = Math.Abs(A.x - B.x) + Math.Abs(A.y - B.y);
         return dist;
     }
+}
+public enum Rank
+{
+    Vanguard,
+    Reserve,
+    Centre,
+    Rear
 }

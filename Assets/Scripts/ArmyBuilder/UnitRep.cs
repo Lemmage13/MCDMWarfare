@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class UnitRep : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] TMP_Dropdown Ancestry;
+    [SerializeField] TMP_Dropdown Type;
 
-    // Update is called once per frame
-    void Update()
+    public int[] GetAncTyp()
     {
-        
+        return new int[] { Ancestry.value, Type.value };
     }
 }

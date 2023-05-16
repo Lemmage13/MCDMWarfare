@@ -1,11 +1,10 @@
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+ 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -31,6 +30,9 @@ public class GameManager : MonoBehaviour
     }
     public void StartBattle()
     {
+        GameObject AddUnitObj = GameObject.Find("AddUnit");
+        AddUnit addUnit = AddUnitObj.GetComponent<AddUnit>();
+        addUnit.CommitUnits();
         UpdateGameState(GameState.Battlefield);
     }
     public void UpdateGameState(GameState newState)
@@ -72,6 +74,7 @@ public class GameManager : MonoBehaviour
                 RoundEnd();
                 break;
             case BattleState.GameEnd:
+                UIManager.instance.gameEnd();
                 break;
             default:
                 break;
@@ -85,25 +88,18 @@ public class GameManager : MonoBehaviour
     {
         roundEnd = false;
         activePlayer = 0;
-        StartCoroutine(PlayerRound(turnorder[activePlayer]));
+        PlayerRound(turnorder[activePlayer]);
         while (!roundEnd)
         {
             yield return null;
         }
     }
-    public IEnumerator PlayerRound(int player)
+    public void PlayerRound(int player)
     {
         Debug.Log($"player turn " + player.ToString());
         List<BaseUnit> playerUnits = UnitManager.instance.GetPlayerUnits(player);
         foreach (BaseUnit unit in playerUnits) { unit.Ready = true; }
-        if (Victor == Team.none)
-        {
-            while (turnorder[activePlayer] == player)
-            {
-                yield return null;
-            }
-        }
-    }
+    } 
     public void EndTurn(int player)
     {
         UnitManager.instance.Active = null;
@@ -119,19 +115,19 @@ public class GameManager : MonoBehaviour
         {
             UpdateBattleState(BattleState.RoundEnd);
         }
-        else { StartCoroutine(PlayerRound(turnorder[activePlayer])); }
+        else { PlayerRound(turnorder[activePlayer]); }
     }
     public void RoundEnd()
     {
         int PCUTier = 0;
         int DMUTier = 0;
-        for (int i = 0; i < UnitManager.instance.AllUnits.Count; i++)
+        foreach (BaseUnit unit in UnitManager.instance.AllUnits)
         {
-            BaseUnit unit = UnitManager.instance.AllUnits[i];
             if (unit.Alive)
             {
-                if (unit.Player > 0) { PCUTier += unit.GetTier(); }
-                else if (UnitManager.instance.AllUnits[i].Player < 0) { DMUTier += unit.GetTier(); }
+                int tier = unit.GetTier();
+                if (unit.Player > 0) { PCUTier += tier; }
+                else if (unit.Player < 0) { DMUTier += tier; }
             }
         }
         Debug.Log("compare: " + PCUTier.ToString() + " " + DMUTier.ToString());
@@ -201,13 +197,13 @@ public enum UnitType
 {
 
     Infantry,
-    Aerial,
     Artillery,
-    Cavalry
+    Cavalry,
+    Aerial,
 }
 public enum Ancestry
 {
     Human,
-    Dwarf,
-    Elf
+    Elf,
+    Dwarf
 }

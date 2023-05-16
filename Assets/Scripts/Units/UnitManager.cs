@@ -32,16 +32,12 @@ public class UnitManager : MonoBehaviour
         Selected = null;
         UnitSelected(null);
     }
-    public BaseUnit GenerateUnit(int player, UnitType type, Ancestry ancestry)
+    public BaseUnit GenerateUnit(int player, Ancestry ancestry, UnitType type)
     {
         BaseUnit unit = Instantiate(unitPrefab, new Vector3(100, 100, 100), Quaternion.identity);
-        unit.Initialise(type, ancestry, player);
+        unit.Initialise(ancestry, type, player);
         AllUnits.Add(unit);
         return unit;
-    }
-    public void debuggy()
-    {
-        Debug.Log("method reached");
     }
     public async void Spawning()
     {
@@ -52,7 +48,7 @@ public class UnitManager : MonoBehaviour
         foreach (int[] pUnit in playerUnits)
         {
             i++;
-            BaseUnit unit = UnitManager.instance.GenerateUnit(1, (UnitType)pUnit[0], (Ancestry)pUnit[1]);
+            BaseUnit unit = UnitManager.instance.GenerateUnit(1, (Ancestry)pUnit[0], (UnitType)pUnit[1]);
             unit.name = "player " + 1.ToString() + " unit " + i.ToString();
             unit.ActivateSpawning();
             while (unit.Occupying == null) { await Task.Yield(); } //neater way to use aync here
@@ -62,7 +58,7 @@ public class UnitManager : MonoBehaviour
         foreach (int[] dUnit in DMUnits)
         {
             i++;
-            BaseUnit unit = UnitManager.instance.GenerateUnit(-1, (UnitType)dUnit[0], (Ancestry)dUnit[1]);
+            BaseUnit unit = UnitManager.instance.GenerateUnit(-1, (Ancestry)dUnit[0], (UnitType)dUnit[1]);
             unit.name = "player " + (-1).ToString() + " unit " + i.ToString();
             unit.ActivateSpawning();
             while (unit.Occupying == null) { await Task.Yield(); } //neater way to use aync here

@@ -47,7 +47,7 @@ public class BaseUnit : MonoBehaviour
     [SerializeField] int tier = 1;   //unit tier
 
     //initialise with fields from unitmanager in order to prepare stats + components
-    public void Initialise(UnitType type, Ancestry ancestry, int player)
+    public void Initialise(Ancestry ancestry, UnitType type, int player)
     {
         Type = type;
         Ancestry = ancestry;
@@ -57,6 +57,7 @@ public class BaseUnit : MonoBehaviour
         else { Side = false; }
         ModifyStats();
         AddScripts();
+        Alive = true;
         HP = size;
         GetComponentInChildren<StatsManager>().InitialiseStats();
     }
@@ -179,8 +180,8 @@ public class BaseUnit : MonoBehaviour
         {
             if (!MORTest(13))
             {
-                ChangeHP(-1);
                 Diminished = true;
+                ChangeHP(-1);
             }
         }
     }
@@ -218,6 +219,14 @@ public class BaseUnit : MonoBehaviour
             case UnitType.Infantry:
                 Attack = this.gameObject.AddComponent<InfantryAttack>();
                 Move = this.gameObject.AddComponent<FootmenMove>();
+                break;
+            case UnitType.Artillery:
+                Attack = this.gameObject.AddComponent<ArtilleryAttack>();
+                Move = this.gameObject.AddComponent<FootmenMove>();
+                break;
+            case UnitType.Cavalry:
+                Attack = this.gameObject.AddComponent<CavalryAttack>();
+                Move = this.gameObject.AddComponent<OffFieldMove>();
                 break;
             default:
                 break;

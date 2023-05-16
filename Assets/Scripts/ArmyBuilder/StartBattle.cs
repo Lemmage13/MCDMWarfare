@@ -6,6 +6,6 @@ public class StartBattle : MonoBehaviour
 {
     public void BattleStarter()
     {
-        GameManager.Instance.UpdateGameState(GameState.Battlefield);
+        GameManager.Instance.StartBattle();
     }
 }

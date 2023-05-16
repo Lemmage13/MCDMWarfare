@@ -6,7 +6,6 @@ public static class UnitList
 {
     static List<int[]> playerUnits;
     static List<int[]> DMUnits;
-
     static public void SetPlayerUnits(List<int[]> unitList)
     {
         playerUnits = new List<int[]>(unitList);
