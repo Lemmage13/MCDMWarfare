@@ -62,7 +62,7 @@ public class BattlefieldManager : MonoBehaviour
             space.ListAdjacent();
         }
         OffFieldSpaceGen();
-        cam.transform.position = new Vector3((float)files / 2, (float)ranks + 0.3F, -100);
+        cam.GetComponent<CamMvmtController>().SetCamCentre(new Vector3((float)files / 2, (float)ranks + 0.3F, -100));
     }
     void AssignRank(Space space, int rank)
     {
