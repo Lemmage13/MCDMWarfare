@@ -32,7 +32,7 @@ public class CamMvmtController : MonoBehaviour
         float yAxisDelta = Input.GetAxis("Vertical");
         float newX = Mathf.Clamp(transform.position.x + xAxisDelta * camSpeed, camCentre.x - mvmtLimit, camCentre.x + mvmtLimit);
         float newY = Mathf.Clamp(transform.position.y + yAxisDelta * camSpeed, camCentre.y - mvmtLimit, camCentre.y + mvmtLimit);
-        transform.position = new Vector3(newX, newY, -10);
+        transform.position = new Vector3(newX, newY, -100);
     }
     public void SetCamCentre(Vector3 newCentre)
     {

@@ -14,10 +14,13 @@ public class CavalryAttack : MonoBehaviour, IAttack
     }
     public void AttackPlate()
     {
-        List<BaseUnit> exposedUnits = FindExposed();
-        foreach (BaseUnit unit in exposedUnits)
+        if (unit.CanAttack())
         {
-            unit.Occupying.Attackable.SetActive(true);
+            List<BaseUnit> exposedUnits = FindExposed();
+            foreach (BaseUnit unit in exposedUnits)
+            {
+                unit.Occupying.Attackable.SetActive(true);
+            }
         }
     }
     List<BaseUnit> FindExposed()
@@ -58,6 +61,13 @@ public class CavalryAttack : MonoBehaviour, IAttack
                         if (OpenPathToEdge(space)) { exposed.Add(space.occupiedBy); }
                     }
                 }
+            }
+        }
+        foreach(BaseUnit target in UnitManager.instance.AllUnits)
+        {
+            if (target.Type == UnitType.Cavalry && unit.Side != target.Side)
+            {
+                exposed.Add(target);
             }
         }
         return exposed;

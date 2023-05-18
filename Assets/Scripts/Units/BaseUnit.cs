@@ -72,6 +72,7 @@ public class BaseUnit : MonoBehaviour
         AddActionPoints();
         Move.MovePlate();
         Attack.AttackPlate();
+        Camera.main.GetComponentInChildren<UItxtIndicator>().UpdateText("Unit active: " + Ancestry.ToString() + " " + Type.ToString());
         while (UnitManager.instance.Active = this)
         {
             await Task.Yield();

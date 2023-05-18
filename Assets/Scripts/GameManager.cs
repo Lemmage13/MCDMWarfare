@@ -96,6 +96,10 @@ public class GameManager : MonoBehaviour
     }
     public void PlayerRound(int player)
     {
+        if (player > 0) {
+            Camera.main.GetComponentInChildren<UItxtIndicator>().UpdateText("Player Turn");
+        }
+        else { Camera.main.GetComponentInChildren<UItxtIndicator>().UpdateText("DM Turn"); }
         Debug.Log($"player turn " + player.ToString());
         List<BaseUnit> playerUnits = UnitManager.instance.GetPlayerUnits(player);
         foreach (BaseUnit unit in playerUnits) { unit.Ready = true; }

@@ -45,11 +45,13 @@ public class UnitManager : MonoBehaviour
         List<int[]> playerUnits = UnitList.GetPlayerUnits();
         List<int[]> DMUnits = UnitList.GetDMUnits();
         int i = 0;
+        Camera camera = Camera.main;
         foreach (int[] pUnit in playerUnits)
         {
             i++;
             BaseUnit unit = UnitManager.instance.GenerateUnit(1, (Ancestry)pUnit[0], (UnitType)pUnit[1]);
             unit.name = "player " + 1.ToString() + " unit " + i.ToString();
+            camera.GetComponentInChildren<UItxtIndicator>().UpdateText("Player spawning: " + unit.Ancestry.ToString() + " " + unit.Type.ToString());
             unit.ActivateSpawning();
             while (unit.Occupying == null) { await Task.Yield(); } //neater way to use aync here
             Debug.Log("unit " + (i).ToString() + " of " + pUnit.Length.ToString() + " spawned");
@@ -60,6 +62,7 @@ public class UnitManager : MonoBehaviour
             i++;
             BaseUnit unit = UnitManager.instance.GenerateUnit(-1, (Ancestry)dUnit[0], (UnitType)dUnit[1]);
             unit.name = "player " + (-1).ToString() + " unit " + i.ToString();
+            camera.GetComponentInChildren<UItxtIndicator>().UpdateText("DM spawning: " + unit.Ancestry.ToString() + " " + unit.Type.ToString());
             unit.ActivateSpawning();
             while (unit.Occupying == null) { await Task.Yield(); } //neater way to use aync here
             Debug.Log("unit " + (i).ToString() + " of " + dUnit.Length.ToString() + " spawned");

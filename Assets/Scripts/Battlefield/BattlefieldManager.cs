@@ -18,7 +18,7 @@ public class BattlefieldManager : MonoBehaviour
     {
         instance = this;
     }
-    void Start()
+    private void Start()
     {
         BuildBattlefield();
         UnitManager.instance.Spawning();
