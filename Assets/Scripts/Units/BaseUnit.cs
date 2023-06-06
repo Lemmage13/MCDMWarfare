@@ -46,6 +46,15 @@ public class BaseUnit : MonoBehaviour
     [SerializeField] int size = 6;   //Size
     [SerializeField] int tier = 1;   //unit tier
 
+    private void Update()
+    {
+        if (Occupying != null && transform.position != Occupying.transform.position)
+        {
+            Vector3 currentPos = transform.position;
+            Vector3 targetPos = new Vector3(Occupying.transform.position.x, Occupying.transform.position.y, -2);
+            transform.position = Vector3.Lerp(currentPos, targetPos, 0.1F);
+        }
+    }
     //initialise with fields from unitmanager in order to prepare stats + components
     public void Initialise(Ancestry ancestry, UnitType type, int player)
     {
@@ -101,7 +110,6 @@ public class BaseUnit : MonoBehaviour
         ActionStarted();
         int dist = space.Distance(Occupying, space);
         ChangeSpace(space);
-        ChangePosition(new Vector3(space.transform.position.x, space.transform.position.y, -2));
         MP -= dist;
         ActionFinished();
     }
